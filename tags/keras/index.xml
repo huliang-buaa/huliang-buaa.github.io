@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>keras | Olivier Gimenez</title><link>https://oliviergimenez.github.io/tags/keras/</link><atom:link href="https://oliviergimenez.github.io/tags/keras/index.xml" rel="self" type="application/rss+xml"/><description>keras</description><generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Olivier Gimenez 2022</copyright><lastBuildDate>Sun, 02 Jan 2022 00:00:00 +0000</lastBuildDate><image><url>https://oliviergimenez.github.io/img/flyfishing.jpg</url><title>keras</title><link>https://oliviergimenez.github.io/tags/keras/</link></image><item><title>Binary image classification using Keras in R: Using CT scans to predict patients with Covid</title><link>https://oliviergimenez.github.io/blog/image-classif/</link><pubDate>Sun, 02 Jan 2022 00:00:00 +0000</pubDate><guid>https://oliviergimenez.github.io/blog/image-classif/</guid><description>&lt;p>Here I illustrate how to train a CNN with Keras in R to predict from patients' CT scans those who will develop severe illness from Covid.&lt;/p>
+&lt;h1 id="motivation">Motivation&lt;/h1>
+&lt;p>Michael Blum
+&lt;a href="https://twitter.com/mblum_g/status/1475940763716444161?s=20" target="_blank" rel="noopener">tweeted&lt;/a> about the
+&lt;a href="https://stoic2021.grand-challenge.org/stoic2021/" target="_blank" rel="noopener">STOIC2021 - COVID-19 AI challenge&lt;/a>. The main goal of this challenge is to predict from the patients'
+&lt;a href="https://en.wikipedia.org/wiki/CT_scan" target="_blank" rel="noopener">CT scans&lt;/a> who will develop severe illness from Covid.&lt;/p>
+&lt;p>Given my
+&lt;a href="https://oliviergimenez.github.io/blog/learning-machine-learning/" target="_blank" rel="noopener">recent interest in machine learning&lt;/a>, this challenge peaked my interest. Although &lt;code>Python&lt;/code> is the machine learning &lt;em>lingua franca&lt;/em>, it is possible to
+&lt;a href="https://github.com/oliviergimenez/computo-deeplearning-occupany-lynx" target="_blank" rel="noopener">train a convolutional neural network (CNN) in &lt;code>R&lt;/code>&lt;/a> and perform (binary) image classification.&lt;/p>
+&lt;p>Here, I will use an
+&lt;a href="https://keras.rstudio.com/" target="_blank" rel="noopener">&lt;code>R&lt;/code> interface to &lt;code>Keras&lt;/code>&lt;/a> that allows training neural networks. Note that the
+&lt;a href="https://stoic2021.grand-challenge.org/stoic-db/" target="_blank" rel="noopener">dataset shared for the challenge&lt;/a> is big, like 280Go big, and it took me a day to download it. For the sake of illustration, I will use a similar but much lighter dataset from a
+&lt;a href="https://en.wikipedia.org/wiki/Kaggle" target="_blank" rel="noopener">Kaggle&lt;/a> repository &lt;a href="https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset">https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset&lt;/a>.&lt;/p>
+&lt;p>The code is available on GitHub as usual &lt;a href="https://github.com/oliviergimenez/bin-image-classif">https://github.com/oliviergimenez/bin-image-classif&lt;/a>.&lt;/p>
+&lt;p>First things first, load the packages we will need.&lt;/p>
+&lt;pre>&lt;code class="language-r">library(tidyverse)
+theme_set(theme_light())
+library(keras)
+&lt;/code>&lt;/pre>
+&lt;h1 id="read-in-and-process-data">Read in and process data&lt;/h1>
+&lt;p>We will need a function to process images, I&amp;rsquo;m stealing
+&lt;a href="https://rpubs.com/spalladino14/653239" target="_blank" rel="noopener">that one&lt;/a> written by
+&lt;a href="https://www.linkedin.com/in/spencer-palladino/" target="_blank" rel="noopener">Spencer Palladino&lt;/a>.&lt;/p>
+&lt;pre>&lt;code class="language-r">process_pix &amp;lt;- function(lsf) {
+img &amp;lt;- lapply(lsf, image_load, grayscale = TRUE) # grayscale the image
+arr &amp;lt;- lapply(img, image_to_array) # turns it into an array
+arr_resized &amp;lt;- lapply(arr, image_array_resize,
+height = 100,
+width = 100) # resize
+arr_normalized &amp;lt;- normalize(arr_resized, axis = 1) #normalize to make small numbers
+return(arr_normalized)
+}
+&lt;/code>&lt;/pre>
+&lt;p>Now let&amp;rsquo;s process images for patients with Covid, and do some reshaping. Idem with images for patients without Covid.&lt;/p>
+&lt;pre>&lt;code class="language-r"># with covid
+lsf &amp;lt;- list.files(&amp;quot;dat/COVID/&amp;quot;, full.names = TRUE)
+covid &amp;lt;- process_pix(lsf)
+covid &amp;lt;- covid[,,,1] # get rid of last dim
+covid_reshaped &amp;lt;- array_reshape(covid, c(nrow(covid), 100*100))
+# without covid
+lsf &amp;lt;- list.files(&amp;quot;dat/non-COVID/&amp;quot;, full.names = TRUE)
+ncovid &amp;lt;- process_pix(lsf)
+ncovid &amp;lt;- ncovid[,,,1] # get rid of last dim
+ncovid_reshaped &amp;lt;- array_reshape(ncovid, c(nrow(ncovid), 100*100))
+&lt;/code>&lt;/pre>
+&lt;p>We have 1252 CT scans of patients with Covid, and 1229 without.&lt;/p>
+&lt;p>Let&amp;rsquo;s visualise these scans. Let&amp;rsquo;s pick a patient with Covid, and another one without.&lt;/p>
+&lt;pre>&lt;code class="language-r">scancovid &amp;lt;- reshape2::melt(covid[10,,])
+plotcovid &amp;lt;- scancovid %&amp;gt;%
+ggplot() +
+aes(x = Var1, y = Var2, fill = value) +
+geom_raster() +
+labs(x = NULL, y = NULL, title = &amp;quot;CT scan of a patient with covid&amp;quot;) +
+scale_fill_viridis_c() +
+theme(legend.position = &amp;quot;none&amp;quot;)
+scanncovid &amp;lt;- reshape2::melt(ncovid[10,,])
+plotncovid &amp;lt;- scanncovid %&amp;gt;%
+ggplot() +
+aes(x = Var1, y = Var2, fill = value) +
+geom_raster() +
+labs(x = NULL, y = NULL, title = &amp;quot;CT scan of a patient without covid&amp;quot;) +
+scale_fill_viridis_c() +
+theme(legend.position = &amp;quot;none&amp;quot;)
+library(patchwork)
+plotcovid + plotncovid
+&lt;/code>&lt;/pre>
+&lt;p>&lt;img src="unnamed-chunk-4-1.png" alt="">&lt;!-- -->&lt;/p>
+&lt;p>Put altogether and shuffle.&lt;/p>
+&lt;pre>&lt;code class="language-r">df &amp;lt;- rbind(cbind(covid_reshaped, 1), # 1 = covid
+cbind(ncovid_reshaped, 0)) # 0 = no covid
+set.seed(1234)
+shuffle &amp;lt;- sample(nrow(df), replace = F)
+df &amp;lt;- df[shuffle, ]
+&lt;/code>&lt;/pre>
+&lt;p>Sounds great. We have everything we need to start training a convolutional neural network model.&lt;/p>
+&lt;h1 id="convolutional-neural-network-cnn">Convolutional neural network (CNN)&lt;/h1>
+&lt;p>Let&amp;rsquo;s build our training and testing datasets using a 80/20 split.&lt;/p>
+&lt;pre>&lt;code class="language-r">set.seed(2022)
+split &amp;lt;- sample(2, nrow(df), replace = T, prob = c(0.8, 0.2))
+train &amp;lt;- df[split == 1,]
+test &amp;lt;- df[split == 2,]
+train_target &amp;lt;- df[split == 1, 10001] # label in training dataset
+test_target &amp;lt;- df[split == 2, 10001] # label in testing dataset
+&lt;/code>&lt;/pre>
+&lt;p>Now build our model. I use three layers (&lt;code>layer_dense()&lt;/code> function) that I put one after the other with piping. I also use regularization (&lt;code>layer_dropout()&lt;/code> function) to avoid overfitting.&lt;/p>
+&lt;pre>&lt;code class="language-r">model &amp;lt;- keras_model_sequential() %&amp;gt;%
+layer_dense(units = 512, activation = &amp;quot;relu&amp;quot;) %&amp;gt;%
+layer_dropout(0.4) %&amp;gt;%
+layer_dense(units = 256, activation = &amp;quot;relu&amp;quot;) %&amp;gt;%
+layer_dropout(0.3) %&amp;gt;%
+layer_dense(units = 128, activation = &amp;quot;relu&amp;quot;) %&amp;gt;%
+layer_dropout(0.2) %&amp;gt;%
+layer_dense(units = 2, activation = 'softmax')
+&lt;/code>&lt;/pre>
+&lt;p>Compile the model with defaults specific to binary classification.&lt;/p>
+&lt;pre>&lt;code class="language-r">model %&amp;gt;%
+compile(optimizer = 'adam',
+loss = 'binary_crossentropy',
+metrics = c('accuracy'))
+&lt;/code>&lt;/pre>
+&lt;p>We use one-hot encoding (&lt;code>to_categorical()&lt;/code> function) aka dummy coding in statistics.&lt;/p>
+&lt;pre>&lt;code class="language-r">train_label &amp;lt;- to_categorical(train_target)
+test_label &amp;lt;- to_categorical(test_target)
+&lt;/code>&lt;/pre>
+&lt;p>Now let&amp;rsquo;s fit our model to the training dataset.&lt;/p>
+&lt;pre>&lt;code class="language-r">fit_covid &amp;lt;- model %&amp;gt;%
+fit(x = train,
+y = train_label,
+epochs = 25,
+batch_size = 512, # try also 128 and 256
+verbose = 2,
+validation_split = 0.2)
+&lt;/code>&lt;/pre>
+&lt;p>A quick visualization of the performances shows that the algorithm is doing not too bad. No over/under-fitting. Accuracy and loss are fine.&lt;/p>
+&lt;pre>&lt;code class="language-r">plot(fit_covid)
+&lt;/code>&lt;/pre>
+&lt;p>&lt;img src="unnamed-chunk-11-1.png" alt="">&lt;!-- -->&lt;/p>
+&lt;p>What about the performances on the testing dataset?&lt;/p>
+&lt;pre>&lt;code class="language-r">model %&amp;gt;%
+evaluate(test, test_label)
+&lt;/code>&lt;/pre>
+&lt;pre>&lt;code>## loss accuracy
+## 0.02048795 0.99795920
+&lt;/code>&lt;/pre>
+&lt;p>Let&amp;rsquo;s do some predictions on the testing dataset, and compare with ground truth.&lt;/p>
+&lt;pre>&lt;code class="language-r">predictedclasses &amp;lt;- model %&amp;gt;%
+predict_classes(test)
+table(Prediction = predictedclasses,
+Actual = test_target)
+&lt;/code>&lt;/pre>
+&lt;pre>&lt;code>## Actual
+## Prediction 0 1
+## 0 243 0
+## 1 1 246
+&lt;/code>&lt;/pre>
+&lt;p>Pretty cool. Only one healthy patient is misclassified as being sick. Let&amp;rsquo;s save our model for further use.&lt;/p>
+&lt;pre>&lt;code class="language-r">save_model_tf(model, &amp;quot;model/covidmodel&amp;quot;) # save the model
+&lt;/code>&lt;/pre>
+&lt;p>I&amp;rsquo;m happy with these results. In general however, we need to find ways to improve the performances. Check out some tips
+&lt;a href="https://machinelearningmastery.com/improve-deep-learning-performance/" target="_blank" rel="noopener">here&lt;/a> with examples implemented in &lt;code>Keras&lt;/code> with &lt;code>R&lt;/code>
+&lt;a href="https://keras.rstudio.com/articles/examples/index.html" target="_blank" rel="noopener">there&lt;/a>.&lt;/p></description></item></channel></rss>

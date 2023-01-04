@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>citizen-science | Olivier Gimenez</title><link>https://oliviergimenez.github.io/tags/citizen-science/</link><atom:link href="https://oliviergimenez.github.io/tags/citizen-science/index.xml" rel="self" type="application/rss+xml"/><description>citizen-science</description><generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Olivier Gimenez 2022</copyright><lastBuildDate>Thu, 30 Jun 2022 00:00:00 +0000</lastBuildDate><image><url>https://oliviergimenez.github.io/img/flyfishing.jpg</url><title>citizen-science</title><link>https://oliviergimenez.github.io/tags/citizen-science/</link></image><item><title>New paper on monk seal recovery in Greece</title><link>https://oliviergimenez.github.io/blog/2022-06-30-new-paper-on-monk-seal-recovery-in-greece/</link><pubDate>Thu, 30 Jun 2022 00:00:00 +0000</pubDate><guid>https://oliviergimenez.github.io/blog/2022-06-30-new-paper-on-monk-seal-recovery-in-greece/</guid><description>&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">Thrilled to see our work on Mediterranean monk seal out in &lt;a href="https://twitter.com/AnimalConserv?ref_src=twsrc%5Etfw">@AnimalConserv&lt;/a> 🦭&lt;br>&lt;br>We show a significant range recovery of the species in Greece 🇬🇷 using &lt;a href="https://twitter.com/hashtag/CitizenScience?src=hash&amp;amp;ref_src=twsrc%5Etfw">#CitizenScience&lt;/a> &amp;amp; occupancy models&lt;a href="https://t.co/ILYdzArZq7">https://t.co/ILYdzArZq7&lt;/a>&lt;br>&lt;br>Check out NGO MOm amazing work &lt;a href="https://t.co/hM8BhfRQ7w">https://t.co/hM8BhfRQ7w&lt;/a>&lt;br>&lt;br>DM ➡️ PDF 😉 &lt;a href="https://t.co/ILqnFvMypL">pic.twitter.com/ILqnFvMypL&lt;/a>&lt;/p>&amp;mdash; Olivier Gimenez 🖖 (@oaggimenez) &lt;a href="https://twitter.com/oaggimenez/status/1542508503872352256?ref_src=twsrc%5Etfw">June 30, 2022&lt;/a>&lt;/blockquote> &lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8">&lt;/script></description></item><item><title>International Congress on Biological Conservation</title><link>https://oliviergimenez.github.io/blog/iccb2014/</link><pubDate>Sun, 02 Aug 2015 12:00:00 +0000</pubDate><guid>https://oliviergimenez.github.io/blog/iccb2014/</guid><description>&lt;p>I attended the &lt;a href="http://www.iccb-eccb2015.org/" target="_blank">International
+Congress on Biological Conservation&lt;/a> that was held in my home town Montpellier.
+The students of our team were on fire and talked about their exciting work. Gilles
+presented a
+bio-economic model to study the population dynamics of Asian captive elephants,
+a nice example of how to explicitly incorporate interactions between captive and wild
+populations in species management.&lt;/p>
+&lt;iframe src="https://widgets.figshare.com/articles/4833113/embed?show_title=1" width="568" height="351" frameborder="0">&lt;/iframe>
+&lt;p>Julie talked about her use of opportunistic data to map the colonisation of the wolf in France; this is a neat
+example of how to generate non-detections by carefully assessing the observation efforts
+to use dynamic occupancy models.&lt;/p>
+&lt;p>Anne-Sophie presented
+an
+application of Poisson point process modeling to map the presence of brown bear presence in
+Greece using citizen science data with possible observer bias.&lt;/p>
+&lt;iframe src="https://widgets.figshare.com/articles/4833125/embed?show_title=0" width="568" height="351" frameborder="0">&lt;/iframe>
+&lt;p>Blaise presented his
+results on a
+sociological survey to assess the attitudes of local residents towards the presence of Brown
+bears in the Pyrenees.&lt;/p>
+&lt;iframe src="https://widgets.figshare.com/articles/4833122/embed?show_title=1" width="568" height="351" frameborder="0">&lt;/iframe>
+&lt;p>Last, Laetitia had a poster on the use of
+a
+spatially explicit individual-based model to explore the best strategies (reintroductions
+and / or corridors) to restore the population of lynx in the Vosges mountains.&lt;/p>
+&lt;iframe src="https://widgets.figshare.com/articles/4833116/embed?show_title=1" width="568" height="351" frameborder="0">&lt;/iframe>
+&lt;p>I
+gave a talk
+on a
+review of the methods to analyse citizen science data. This was part of a symposium (nicely
+summarised by Muki Haklay &lt;a href="https://povesham.wordpress.com/2015/08/04/notes-from-iccbeccb-2015-day-2-citizen-science-data-quality/" target="_blank">here&lt;/a>)
+organised by Karine Princé and Wes Hochachka. Stay tuned, a paper is on its way!&lt;/p>
+&lt;iframe src="https://widgets.figshare.com/articles/4833110/embed?show_title=1" width="568" height="351" frameborder="0">&lt;/iframe>
+&lt;p>Overall, the program
+of this conference was dense, the talks and discussions between sessions were stimulating,
+I’m looking forward to attending the next one!&lt;/p></description></item><item><title>Workshop on citizen science and statistics</title><link>https://oliviergimenez.github.io/blog/cs_meeting/</link><pubDate>Thu, 16 Oct 2014 12:00:00 +0000</pubDate><guid>https://oliviergimenez.github.io/blog/cs_meeting/</guid><description>&lt;p>After a month off, I’m back to work starting with a 2-day workshop on citizen sciences
+I’ve co-organised with Romain Julliard and Pascal Monestiez
+(
+&lt;a href="https://dl.dropboxusercontent.com/u/23160641/my-pubs/prog_16_17_octobre_v4.pdf" target="_blank" rel="noopener">program&lt;/a>)
+as part of
+&lt;a href="https://sites.google.com/site/gdrecostat/" target="_blank" rel="noopener">our group on Statistical Ecology&lt;/a>
+and on citizen sciences
+&lt;a href="http://ciam.inra.fr/cisstats/accueil" target="_blank" rel="noopener">CiSStats&lt;/a>. The discussions
+were stimulating with a nice balance between talks given by data providers on the first
+day and modelers on the second day. I gave a talk based on Anne-Sophie’s work on
+mapping brown bear distribution in Greece using opportunistic data. Slides below:&lt;/p>
+&lt;iframe src="https://widgets.figshare.com/articles/4833521/embed?show_title=1" width="568" height="351" frameborder="0">&lt;/iframe>
+&lt;p>Check out below Anne-Sophie&amp;rsquo;s
+talk she gave at the 2014 International
+Conference on Bear Research and Management in Thessaloniki (Greece) and at the
+joint BES-SFE
+Ecology conference in Lille.&lt;/p></description></item></channel></rss>
